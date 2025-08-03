@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Courses - LearnConnect</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://png.pngtree.com/background/20231030/original/pngtree-technology-enabled-learning-3d-mobile-device-and-books-on-shelves-for-picture-image_5805861.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    header {
+      background-color: #d2b48c; /* Light brown */
+      padding: 15px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h2 {
+      margin: 0;
+    }
+
+    header button {
+      background: #fff;
+      color: #5a3e1b;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .courses-container {
+      max-width: 700px; /* Reduced width */
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .course-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      border-radius: 8px;
+    }
+
+    .course-card h3 {
+      margin-top: 0;
+      color: #007bff;
+    }
+
+    .course-card p {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .course-card button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 18px; /* Increased height */
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .course-card button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Available Courses</h2>
+    <button onclick="goToDashboard()">Back to Dashboard</button>
+  </header>
+
+  <div class="courses-container" id="coursesList">
+    <!-- Courses will be loaded here -->
+  </div>
+
+  <script>
+    const courses = [
+      {
+        title: "Web Development Bootcamp",
+        description: "Learn HTML, CSS, JavaScript, and React from scratch. Perfect for beginners.",
+      },
+      {
+        title: "Python for Data Science",
+        description: "Start with Python basics and move into data analysis, NumPy, and Pandas.",
+      },
+      {
+        title: "AI & Machine Learning",
+        description: "Understand core ML concepts, build models using Scikit-learn and TensorFlow.",
+      },
+      {
+        title: "Communication & Soft Skills",
+        description: "Improve your speaking, teamwork, and presentation abilities.",
+      },
+    ];
+
+    function renderCourses() {
+      const container = document.getElementById("coursesList");
+      courses.forEach(course => {
+        const div = document.createElement("div");
+        div.className = "course-card";
+        div.innerHTML = `
+          <h3>${course.title}</h3>
+          <p>${course.description}</p>
+          <button onclick="alert('You enrolled in ${course.title}')">Enroll Now</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function goToDashboard() {
+      window.location.href = "dashboard.html";
+    }
+
+    renderCourses();
+  </script>
+</body>
+</html>

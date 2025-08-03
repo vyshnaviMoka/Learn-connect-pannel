@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LearnConnect Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://img.freepik.com/free-photo/school-supplies-top-view-background-chalkboard-free-space_73683-2217.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .dashboard-container {
+      background-color: #ffffffdd;
+      padding: 40px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      min-height: 620px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #333;
+      font-size: 28px;
+    }
+
+    header button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    header button:hover {
+      background-color: #cc0000;
+    }
+
+    .course-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .course-card {
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      padding: 15px;
+      width: 100%;
+      max-width: 300px;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .dashboard-btn {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      min-height: 120px;
+      padding: 24px 0;
+      font-size: 16px;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .dashboard-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Custom background images */
+    .mentor-btn {
+      background-image: url('https://res.cloudinary.com/people-matters/image/upload/q_auto,f_auto/v1665413817/1665413816.jpg');
+    }
+
+    .courses-btn {
+      background-image: url('https://thumbs.dreamstime.com/b/global-education-online-study-school-course-e-learning-class-book-world-educational-academic-graduation-success-digital-216428138.jpg');
+    }
+
+    .assessments-btn {
+      background-image: url('https://taylorinstitute.ucalgary.ca/sites/default/files/styles/ucws_hero_cta_large_desktop/public/2022-04/22-TAY-Consistent-Effective-Grading-Graphics-01.png?itok=7jcVe0p8');
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <header>
+      <h1>Welcome <span id="userName"></span>!</h1>
+      <button onclick="logout()">Logout</button>
+    </header>
+
+    <section id="courses">
+      <div id="courseList" class="course-list">
+        <!-- Course cards will appear here -->
+      </div>
+    </section>
+
+    <section class="buttons">
+      <a href="chat.html" class="dashboard-btn mentor-btn"><span>📩 Connect with a Mentor</span></a>
+      <a href="courses.html" class="dashboard-btn courses-btn"><span>📚 Browse Courses</span></a>
+      <a href="assessments.html" class="dashboard-btn assessments-btn"><span>📝 Take Assessments</span></a>
+    </section>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("You must be logged in!");
+      window.location.href = "index.html";
+    }
+
+    const logout = () => {
+      localStorage.clear();
+      window.location.href = "index.html";
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/users/me", {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Unable to fetch user data.");
+        }
+
+        document.getElementById("userName").innerText = data.name || "User";
+
+        const courses = data.enrolledCourses || [];
+        const courseList = document.getElementById("courseList");
+
+        if (courses.length === 0) {
+          courseList.innerHTML = "<p>You have not enrolled in any courses yet.</p>";
+        } else {
+          courses.forEach(course => {
+            const div = document.createElement("div");
+            div.className = "course-card";
+            div.innerHTML = `
+              <h4>${course.title}</h4>
+              <p>${course.description}</p>
+            `;
+            courseList.appendChild(div);
+          });
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    fetchUserData();
+  </script>
+</body>
+</html>

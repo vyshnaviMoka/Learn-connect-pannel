@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Take Assessment - LearnConnect</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://www.shutterstock.com/shutterstock/photos/365929022/display_1500/stock-vector-assessment-concept-typographic-poster-assessment-concepts-for-web-banner-and-printed-materials-365929022.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: rgba(255, 255, 255, 0.92);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 25px;
+    }
+
+    #courseList {
+      margin-bottom: 20px;
+    }
+
+    .course-card {
+      background-color: #f9f9f9;
+      border-left: 5px solid #007bff;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .course-card h3 {
+      margin: 0;
+      color: #007bff;
+    }
+
+    .course-card p {
+      color: #555;
+    }
+
+    .course-card button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      margin-top: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .course-card button:hover {
+      background-color: #218838;
+    }
+
+    a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📝 Choose a Course to Take Assessment</h2>
+    <div id="courseList"></div>
+    <a href="dashboard.html">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login first.");
+      window.location.href = "index.html";
+    }
+
+    async function loadCourses() {
+      try {
+        const res = await fetch("http://localhost:5000/api/courses", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const courses = await res.json();
+        const courseList = document.getElementById("courseList");
+
+        if (!Array.isArray(courses) || courses.length === 0) {
+          courseList.innerHTML = "<p>No courses available yet.</p>";
+          return;
+        }
+
+        courses.forEach(course => {
+          const div = document.createElement("div");
+          div.className = "course-card";
+          div.innerHTML = `
+            <h3>${course.title}</h3>
+            <p>${course.description}</p>
+            <button onclick="startAssessment('${course._id}', '${course.title}')">Take Assessment</button>
+          `;
+          courseList.appendChild(div);
+        });
+      } catch (error) {
+        console.error("Error loading courses:", error);
+      }
+    }
+
+    function startAssessment(courseId, title) {
+      window.location.href = `start-assessment.html?courseId=${courseId}&title=${encodeURIComponent(title)}`;
+    }
+
+    loadCourses();
+  </script>
+</body>
+</html>
